@@ -23,4 +23,4 @@ bmp = ["image/bmp"]
 hdr = ["image/hdr"]
 
 [dependencies]
-image = { version = "0.10.0", default-features = false }
+image = { version = "0.13.0", default-features = false }
