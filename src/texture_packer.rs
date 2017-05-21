@@ -37,7 +37,7 @@ impl <'a, Pix: Pixel, T: 'a + Clone + Texture<Pixel=Pix>> TexturePacker<'a, T, S
 }
 
 impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> TexturePacker<'a, T, P> {
-    pub fn pack_ref(&mut self, key: String, texture: &'a T) {
+    pub fn pack_ref(&mut self, key: String, texture: &'a T) -> Result<(), ()> {
         let (w, h) = (texture.width(), texture.height());
         let source = if self.config.trim {
             trim_texture(texture)
@@ -54,12 +54,15 @@ impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> Textur
             frame.source.w = w;
             frame.source.h = h;
             self.frames.insert(key.clone(), frame);
-        }
+            self.textures.insert(key, texture);
 
-        self.textures.insert(key, texture);
+            Ok(())
+        } else {
+            Err(())
+        }
     }
 
-    pub fn pack_own(&mut self, key: String, texture: T) {
+    pub fn pack_own(&mut self, key: String, texture: T) -> Result<(), ()> {
         let (w, h) = (texture.width(), texture.height());
         let source = if self.config.trim {
             trim_texture(&texture)
@@ -76,9 +79,12 @@ impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> Textur
             frame.source.w = w;
             frame.source.h = h;
             self.frames.insert(key.clone(), frame);
-        }
+            self.textures.insert(key, texture);
 
-        self.textures.insert(key, texture);
+            Ok(())
+        } else {
+            Err(())
+        }
     }
 
     pub fn get_frames(&self) -> &HashMap<String, Frame> {
