@@ -46,19 +46,20 @@ impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> Textur
         };
 
         let texture = SubTexture::from_ref(texture, source);
-        if let Some(mut frame) = self.packer.pack(key.clone(), &texture) {
-            frame.frame.x += self.config.border_padding;
-            frame.frame.y += self.config.border_padding;
-            frame.trimmed = self.config.trim;
-            frame.source = source;
-            frame.source.w = w;
-            frame.source.h = h;
-            self.frames.insert(key.clone(), frame);
-            self.textures.insert(key, texture);
+        match self.packer.pack(key.clone(), &texture) {
+            Some(mut frame) => {
+                frame.frame.x += self.config.border_padding;
+                frame.frame.y += self.config.border_padding;
+                frame.trimmed = self.config.trim;
+                frame.source = source;
+                frame.source.w = w;
+                frame.source.h = h;
+                self.frames.insert(key.clone(), frame);
+                self.textures.insert(key, texture);
 
-            Ok(())
-        } else {
-            Err(())
+                Ok(())
+            },
+            None => Err(())
         }
     }
 
@@ -71,19 +72,20 @@ impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> Textur
         };
 
         let texture = SubTexture::new(texture, source);
-        if let Some(mut frame) = self.packer.pack(key.clone(), &texture) {
-            frame.frame.x += self.config.border_padding;
-            frame.frame.y += self.config.border_padding;
-            frame.trimmed = self.config.trim;
-            frame.source = source;
-            frame.source.w = w;
-            frame.source.h = h;
-            self.frames.insert(key.clone(), frame);
-            self.textures.insert(key, texture);
+        match self.packer.pack(key.clone(), &texture) {
+            Some(mut frame) => {
+                frame.frame.x += self.config.border_padding;
+                frame.frame.y += self.config.border_padding;
+                frame.trimmed = self.config.trim;
+                frame.source = source;
+                frame.source.w = w;
+                frame.source.h = h;
+                self.frames.insert(key.clone(), frame);
+                self.textures.insert(key, texture);
 
-            Ok(())
-        } else {
-            Err(())
+                Ok(())
+            },
+            None => Err(())
         }
     }
 
@@ -110,7 +112,7 @@ impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> Textur
 }
 
 impl<'a, Pix, P, T: Clone> Texture for  TexturePacker<'a, T, P>
-where Pix: Pixel, P: Packer<Pixel=Pix>, T:  Texture<Pixel=Pix> {
+    where Pix: Pixel, P: Packer<Pixel=Pix>, T:  Texture<Pixel=Pix> {
     type Pixel = Pix;
 
     fn width(&self) -> u32 {
