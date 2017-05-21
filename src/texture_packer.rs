@@ -37,6 +37,10 @@ impl <'a, Pix: Pixel, T: 'a + Clone + Texture<Pixel=Pix>> TexturePacker<'a, T, S
 }
 
 impl<'a, Pix: Pixel, P: Packer<Pixel=Pix>, T: Clone + Texture<Pixel=Pix>> TexturePacker<'a, T, P> {
+    pub fn can_pack(&self, texture: &T) -> bool {
+        self.packer.can_pack(texture)
+    }
+
     pub fn pack_ref(&mut self, key: String, texture: &'a T) -> Result<(), ()> {
         let (w, h) = (texture.width(), texture.height());
         let source = if self.config.trim {
